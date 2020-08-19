@@ -22,14 +22,14 @@ class Pixiv_Miku_Download_API(object):
     def login_user(self, username=_USERNAME, password=_PASSWORD):
         self.api.login(username, password)
 
-    def create_illusts_dir(self, Illusts_path="C:/Users/Administrateur/Pictures/Illusts", aim="favorite"):
+    def create_illusts_dir(self, Illusts_path=os.path.join(os.getcwd(),"Illusts"), aim="favorite"):
         Illusts_path_favorite = os.path.join(Illusts_path, aim)
         if not os.path.exists(Illusts_path_favorite):
             os.makedirs(Illusts_path_favorite)
         return Illusts_path_favorite
 
     def create_illusts_records(self,
-                               Record_path="C:/Users/Administrateur/Documents/Illusts_records",
+                               Record_path=os.getcwd(),
                                Record_filename="Miku_Illusts_record.csv"):
         Record_path_filename = os.path.join(Record_path, Record_filename)
         if not os.path.isfile(Record_path_filename):
@@ -37,26 +37,27 @@ class Pixiv_Miku_Download_API(object):
                 writer = csv.writer(csvFile, delimiter=',')
                 writer.writerow(["favorite", "not_favorite"])
 
-    def get_json(self, aim="favorite"):
+    def get_json(self, aim="favorite",member_id=5545356):
         if aim == 'favorite':
             json_results = self.api.user_bookmarks_illust(
-                5545356, filter=None, req_auth=True, tag="初音ミク")
+                member_id, filter=None, req_auth=True, tag="初音ミク")
         elif aim == 'not_favorite':
             json_results = self.api.search_illust('初音ミク',
-                                                  search_target='partial_match_for_tags',
-                                                  sort='date_desc',
-                                                  )
+                                 search_target='partial_match_for_tags',
+                                 sort='date_desc',
+                                 end_date='2020-05-01'
+                                 )
         return json_results
 
     def get_next_queue(self, json_results, json_result_key='favorite'):
         next_qs = self.api.parse_qs(
-            json_results[json_result_key].next_url)
+            json_results.next_url)
 
         if json_result_key == 'favorite':
-            json_results[json_result_key] = self.api.user_bookmarks_illust(
+            json_results = self.api.user_bookmarks_illust(
                 **next_qs)
         elif json_result_key == 'not_favorite':
-            json_results[json_result_key] = self.api.search_illust(
+            json_results = self.api.search_illust(
                 **next_qs)
 
         return json_results
