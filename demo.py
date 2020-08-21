@@ -126,7 +126,7 @@ def update_bookmark_and_search(json_results=None,
                 print('remove old illust')
                 old_NF_file_path = os.path.join(MDapi.create_illusts_dir(aim='not_favorite'), os.path.basename(a))
                 print(old_NF_file_path)
-                # os.remove(old_NF_file_path)
+                os.remove(old_NF_file_path)
         if remove_file:
             IDrecord_dic['not_favorite'].remove(illust.id)
 
@@ -140,7 +140,7 @@ def update_bookmark_and_search(json_results=None,
 
     if json_results.next_url:
         time.sleep(1)
-        download_bookmark_and_search(json_results=json_results,
+        update_bookmark_and_search(json_results=json_results,
                                      IDrecord_lists=IDrecord_lists,
                                      aim=aim,
                                      count=count,
