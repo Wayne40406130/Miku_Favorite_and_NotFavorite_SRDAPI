@@ -11,8 +11,7 @@ class Pixiv_Miku_Download_API(object):
     _USERNAME = "userbay"
     _PASSWORD = "userpay"
 
-    def __init__(self, aim="favorite", **requests_kwargs):
-        self.aim = aim
+    def __init__(self, **requests_kwargs):
         sni = False
         if not sni:
             self.api = AppPixivAPI()
@@ -61,14 +60,3 @@ class Pixiv_Miku_Download_API(object):
 
         return json_results
 
-
-"""
-
-AAA = Pixiv_Miku_Download_API()
-AAA.login_user()
-WWW = AAA.get_json(aim="favorite")
-print(WWW)
-WWW = {x:AAA.get_json(x) for x in ["favorite", "not_favorite"]}
-for i in WWW["favorite"].illusts:
-    print(i.id)
-"""
