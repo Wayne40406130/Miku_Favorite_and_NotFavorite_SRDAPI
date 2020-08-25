@@ -3,6 +3,7 @@ import os
 import sys
 import csv
 import pandas as pd
+import attr
 sys.dont_write_bytecode = True
 
 
@@ -22,7 +23,7 @@ class Pixiv_Miku_Download_API(object):
     def login_user(self, username=_USERNAME, password=_PASSWORD):
         self.api.login(username, password)
 
-    def create_illusts_dir(self, Illusts_path=os.path.join(os.getcwd(),"Illusts"), aim="favorite"):
+    def create_illusts_dir(self, Illusts_path=os.path.join(os.getcwd(),"test_illusts"), aim="favorite"):
         Illusts_path_favorite = os.path.join(Illusts_path, aim)
         if not os.path.exists(Illusts_path_favorite):
             os.makedirs(Illusts_path_favorite)
@@ -50,15 +51,13 @@ class Pixiv_Miku_Download_API(object):
         return json_results
 
     def get_next_queue(self, json_results, json_result_key='favorite'):
+
+        search_function = {'favorite': self.api.user_bookmarks_illust,
+                           'not_favorite': self.api.search_illust}
         next_qs = self.api.parse_qs(
             json_results.next_url)
 
-        if json_result_key == 'favorite':
-            json_results = self.api.user_bookmarks_illust(
-                **next_qs)
-        elif json_result_key == 'not_favorite':
-            json_results = self.api.search_illust(
-                **next_qs)
+        json_results= search_function[json_result_key](**next_qs)
 
         return json_results
 
